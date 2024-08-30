@@ -1,0 +1,8 @@
+.card-margin {
+    margin-top: 16px;
+}
+.text-truncate-multiline{
+    white-space: nowrap; /* Ngăn không cho văn bản xuống dòng */
+    overflow: hidden; /* Ẩn phần văn bản vượt quá chiều rộng */
+    text-overflow: ellipsis; /* Thêm dấu ba chấm khi văn bản bị cắt */
+}
