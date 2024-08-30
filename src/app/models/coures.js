@@ -8,6 +8,8 @@ const Course = new Schema({
     description: {type: String},
     image: {type: String},
     video: {type: String, required: true},
+    price: {type: Number},
+    level: {type: String, default: 'Trung bình - Dễ'},
     slug: { type: String, slug: "name", unique: true}
 }, {
     timestamps: true
@@ -15,11 +17,23 @@ const Course = new Schema({
 
 
 // Middleware để tạo slug trước khi lưu vào database
-Course.pre('save', function(next) {  // Sửa từ Schema.pre thành Course.pre
+Course.pre('save', async function(next) {
     if (!this.slug) {
-        this.slug = slugify(this.name, { lower: true, strict: true });
+        let slug = slugify(this.name, { lower: true, strict: true });
+        let count = 1;
+        const originalSlug = slug;
+
+        // Sử dụng this.constructor để truy cập mô hình
+        const CourseModel = this.constructor;
+
+        // Kiểm tra tính duy nhất của slug
+        while (await CourseModel.countDocuments({ slug }) > 0) {
+            slug = `${originalSlug}-${count}`;
+            count++;
+        }
+
+        this.slug = slug;
     }
     next();
 });
-
 module.exports = mongoose.model('coures', Course)

@@ -3,7 +3,17 @@ class CoursesController{
     create(req, res){
         res.render('course/create')
     }
-    async store(req, res) {
+
+    async listToupdate(req, res){
+        try {
+            const courses = await course.find({}).lean()
+            res.render('course/update', {courses})  
+        } catch (error) {
+            res.status(400).json({error: 'ERROR!!!'})
+        }
+
+    }
+    async createAdd(req, res) {
         
         const newCourse = new course(req.body)
         newCourse.image = newCourse.video
@@ -23,6 +33,38 @@ class CoursesController{
             })
         } catch (error) {
             res.status(404).json({error: 'ERROR!!!'})
+        }
+    }
+    async toUpdate(req, res){
+        try {
+            const oneUpdateCourse = await course.findById(req.params.id).lean()
+            res.render('course/updateOne', {oneUpdateCourse})
+        } catch (error) {
+            res.status(500).send('Server Error')
+        }
+    }
+    async updateCourse(req, res){
+        try {
+            const Course = await course.findById(req.params.id);
+
+            const updateData = {
+                name: req.body.name || Course.name,
+                description: req.body.description || Course.description,
+                video: req.body.video || Course.video,
+                price: req.body.price || Course.price,
+                level: req.body.level || Course.level
+            };
+    
+            const updatedCourse = await course.findByIdAndUpdate(
+                req.params.id,
+                { $set: updateData },
+                { new: true, runValidators: true }
+            )
+            res.redirect('/courses/update')
+            //res.status(200).json({updatedCourse})
+        } catch (error) {
+            res.status(500).send('Server Error')
+            console.log(error)
         }
     }
 }

@@ -1,6 +1,6 @@
 @charset "UTF-8";
 .card-margin {
-  margin-top: 16px;
+  margin: 20px;
 }
 
 .text-truncate-multiline {

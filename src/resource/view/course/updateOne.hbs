@@ -1,9 +1,10 @@
+{{#with oneUpdateCourse}}
 <div class="mt-4">
-    <h3>Đăng Khóa Học</h3>
-<form class="row g-3" method="POST" action="/courses/create">
+    <h3>Cập Nhật Khóa Học</h3>
+<form class="row g-3" method="POST" action="/courses/update/{{this._id}}">
   <div class="col-9 bold-text bold-border">
     <label for="formGroupExampleInput" class="form-label">Nhập tên khóa học</label>
-    <input type="text" class="form-control" id="name" name="name">
+    <input type="text" class="form-control" id="name" name="name" value="{{this.name}}">
   </div>
   <div class="mb-3 col-9 bold-text bold-border">
     <label for="exampleFormControlTextarea1" class="form-label">Nhập mô tả</label>
@@ -15,7 +16,8 @@
   </div>
   
   <div class="col-12">
-    <button type="submit" class="btn btn-primary">Đăng Khóa Học</button>
+    <button type="submit" class="btn btn-primary">Cập Nhật Khóa Học</button>
   </div>
 </form>
 </div>
+{{/with}}
