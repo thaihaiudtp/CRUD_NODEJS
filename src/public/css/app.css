@@ -9,4 +9,9 @@
   text-overflow: ellipsis; /* Thêm dấu ba chấm khi văn bản bị cắt */
 }
 
+.checkbox {
+  width: 185px;
+  margin: 0 16px;
+}
+
 /*# sourceMappingURL=app.css.map */

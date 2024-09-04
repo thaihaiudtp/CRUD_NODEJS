@@ -3,22 +3,12 @@ class CoursesController{
     create(req, res){
         res.render('course/create')
     }
-
-    async listToupdate(req, res){
-        try {
-            const courses = await course.find({}).lean()
-            res.render('course/update', {courses})  
-        } catch (error) {
-            res.status(400).json({error: 'ERROR!!!'})
-        }
-
-    }
     async createAdd(req, res) {
         
         const newCourse = new course(req.body)
         newCourse.image = newCourse.video
         try {
-            const creatCourse = await newCourse.save()
+            await newCourse.save()
             res.render('course/create')
         } catch (error) {
             console.error('Error creating course:', error);
@@ -35,37 +25,54 @@ class CoursesController{
             res.status(404).json({error: 'ERROR!!!'})
         }
     }
-    async toUpdate(req, res){
+    //[GET] courses/:id/edit
+    async edit(req, res){
         try {
             const oneUpdateCourse = await course.findById(req.params.id).lean()
             res.render('course/updateOne', {oneUpdateCourse})
+            //res.json(oneUpdateCourse)
         } catch (error) {
-            res.status(500).send('Server Error')
-        }
-    }
-    async updateCourse(req, res){
-        try {
-            const Course = await course.findById(req.params.id);
-
-            const updateData = {
-                name: req.body.name || Course.name,
-                description: req.body.description || Course.description,
-                video: req.body.video || Course.video,
-                price: req.body.price || Course.price,
-                level: req.body.level || Course.level
-            };
-    
-            const updatedCourse = await course.findByIdAndUpdate(
-                req.params.id,
-                { $set: updateData },
-                { new: true, runValidators: true }
-            )
-            res.redirect('/courses/update')
-            //res.status(200).json({updatedCourse})
-        } catch (error) {
-            res.status(500).send('Server Error')
+            res.status(404).json({error: 'ERROR!!!'})
             console.log(error)
         }
+        //res.render('course/updateOne')
     }
+    async update(req, res){
+        try {
+            await course.updateOne({_id: req.params.id}, req.body)
+            res.redirect('/me/stored/courses')
+        } catch (error) {
+            res.status(404).json({error: 'ERROR!!!'})
+            console.log(error)
+        }
+        
+    }
+    async delete(req, res){
+        try {
+            await course.delete({_id: req.params.id})
+            res.redirect('back')
+        } catch (error) {
+            res.status(404).json({error: 'ERROR!!!'})
+            console.log(error)           
+        }
+    }
+    //post
+    async formAction(req, res){
+        switch (req.body.action) {
+            case 'delete':
+                try {
+                    await course.delete({_id: {$in: req.body.courseIds}})
+                    res.redirect('back')
+                } catch (error) {
+                    res.status(404).json({error: 'ERROR!!!'})
+                    console.log(error)
+                }
+                break;
+        
+            default:
+                res.json({message: 'action is invalid'})
+        }
+    }
+
 }
 module.exports = new CoursesController

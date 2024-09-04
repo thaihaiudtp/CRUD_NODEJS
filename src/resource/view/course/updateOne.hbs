@@ -1,20 +1,27 @@
 {{#with oneUpdateCourse}}
 <div class="mt-4">
     <h3>Cập Nhật Khóa Học</h3>
-<form class="row g-3" method="POST" action="/courses/update/{{this._id}}">
+<form class="row g-3" method="POST" action="/courses/{{this._id}}?_method=PUT">
   <div class="col-9 bold-text bold-border">
     <label for="formGroupExampleInput" class="form-label">Nhập tên khóa học</label>
     <input type="text" class="form-control" id="name" name="name" value="{{this.name}}">
   </div>
   <div class="mb-3 col-9 bold-text bold-border">
     <label for="exampleFormControlTextarea1" class="form-label">Nhập mô tả</label>
-    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+    <textarea class="form-control" id="description" name="description" rows="3">{{this.description}}</textarea>
   </div>
   <div class="col-9 bold-text bold-border">
     <label for="formGroupExampleInput" class="form-label">Nhập videoId</label>
-    <input type="text" class="form-control" id="video" name="video">
+    <input type="text" class="form-control" id="video" name="video" value="{{this.video}}">
   </div>
-  
+    <div class="col-9 bold-text bold-border">
+    <label for="formGroupExampleInput" class="form-label">Nhập giá</label>
+    <input type="text" class="form-control" id="price" name="price" value="{{this.price}}">
+  </div>
+  <div class="col-9 bold-text bold-border">
+    <label for="formGroupExampleInput" class="form-label">Nhập level</label>
+    <input type="text" class="form-control" id="level" name="level" value="{{this.level}}">
+  </div>
   <div class="col-12">
     <button type="submit" class="btn btn-primary">Cập Nhật Khóa Học</button>
   </div>

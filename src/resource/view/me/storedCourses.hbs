@@ -1,0 +1,146 @@
+<form name="container-form" class="mt-4" method="POST" action="/courses/actionForm">
+    <h3>Khóa học của tôi</h3>
+    {{#if countDeletedCourse}}
+    <a href="/me/trash/courses" style=" text-decoration: none">Thùng rác ({{countDeletedCourse}})</a>
+    {{/if}}
+    
+    <div class="mt-3 d-flex flex-row mb-3 ">
+        <div class="form-check p-2">
+            <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
+            <label class="form-check-label" for="checkbox-all">
+                Chọn tất cả
+            </label>
+        </div>
+        <select class="form-select  checkbox p-2" aria-label="Default select example" name="action" required>
+            <option value="" selected>--Chọn hành động--</option>
+            <option value="delete">Xóa</option>
+        </select>
+        <button type="submit" class="btn btn-outline-primary p-2 disabled btn-check-all" >Áp dụng</button>
+    </div>
+    <table class="table mt-4 table-primary table-bordered table-striped">
+        <thead>
+            <tr class="table-secondary">
+            <th scope="col" >Checkbox</th>
+            <th scope="col">STT</th>
+            <th scope="col">Tên khóa học</th>
+            <th scope="col">Trình độ</th>
+            <th scope="col">Thời gian tạo</th>
+            <th scope="col" colspan="2">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {{#each listCourses}}
+            <tr class="table-success">
+                <td class="d-flex justify-content-center "> 
+                    <div class="form-check p-2">
+                        <input class="form-check-input" type="checkbox" value="{{this._id}}" name="courseIds[]">
+                    </div>
+                </td>
+                <td>{{sum @index 1}}</td>
+                <td>{{this.name}}</td>
+                <td>{{this.level}}</td>
+                <td>{{this.createdAt}}</td>
+                <td>
+                    <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</a>
+                    <a href="#" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="{{this._id}}">Xóa</a>
+                </td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="6">
+                    Bạn chưa đăng khóa học nào
+                    <a href="/courses/create">Đăng khóa học</a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</form>
+            <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa khóa học</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Bạn chắc chắn muốn xóa?</p>
+        </div>
+        <div class="modal-footer">
+            <button id="btn-delete" class="btn btn-danger">Xóa</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+{{!-- FORM HIDDEN SUBMIT--}}
+<form method="POST" id="deleteForm"></form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const exampleModal = document.getElementById('exampleModal')
+            var id
+            const btnDelete = document.getElementById('btn-delete')
+            const formDelete = document.getElementById('deleteForm')
+            var checkboxAll = document.getElementById('checkbox-all')
+            var checkItemAll = document.querySelectorAll('input[name="courseIds[]"]')
+            var btnCheckAll = document.querySelector('.btn-check-all')
+            var containerForm = document.querySelector('form[name="container-form"]')
+           // console.log(btnCheckAll)
+           // console.log(containerForm)            
+            exampleModal.addEventListener('show.bs.modal', function(event) {
+                
+                const button = event.relatedTarget
+                
+                id = button.getAttribute('data-id')
+                //console.log(id)
+            })
+            
+            btnDelete.onclick = function(){
+                formDelete.action = '/courses/' + id +'?_method=DELETE'
+                formDelete.submit()
+            }
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('deleted')) {
+                alert('Xóa thành công');
+            }
+            console.log(checkItemAll)
+            
+            //[ẤN NÚT CHỌN TẤT CẢ]
+            checkboxAll.onchange = function(){
+                
+                var isChecked = checkboxAll.checked  // return True || False
+                checkItemAll.forEach(function(checkbox){
+                   checkbox.checked = isChecked
+                })
+                transBtn()
+            }
+            //[ÂN TỪNG ITEM]
+            checkItemAll.forEach(function(checkbox){
+                checkbox.onchange = function(){
+                    transBtn()
+                    var isChecked = Array.from(checkItemAll).every(function(check){
+                        return check.checked
+                    })
+                    //console.log(isChecked)
+                    if(isChecked) {checkboxAll.checked = true}
+                    else {checkboxAll.checked = false}
+            }
+            })
+            //[chuyển btn từ disabled sang enabled]
+            function transBtn() {   
+                var checkboxCount = Array.from(checkItemAll).filter(function(check){
+                    return check.checked
+                }).length
+                console.log(checkboxCount)
+                if(checkboxCount){
+                    btnCheckAll.classList.remove('disabled')
+                } else {
+                    btnCheckAll.classList.add('disabled')
+                }
+            }
+        })
+
+        
+    </script>

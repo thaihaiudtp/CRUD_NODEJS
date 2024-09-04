@@ -2,13 +2,15 @@ const course = require('../models/coures')
 class SiteController{
     async home(req, res){
         try {
-            const courses = await course.find({}).lean()
+            let courses = await course.find({}).lean()
+            courses = courses.sort(() => Math.random() - 0.5);
             res.render('home', {
                 courses
             })
             //res.json(course)
         } catch (error) {
             res.status(400).json({error: 'ERROR!!!'})
+            console.log(error)
         }
     }
     search(req, res){

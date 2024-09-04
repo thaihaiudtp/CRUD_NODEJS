@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const slugify = require('slugify');
-
+const mongooseDelete = require('mongoose-delete')
 const  Schema  = mongoose.Schema;
 
 const Course = new Schema({
@@ -10,12 +10,13 @@ const Course = new Schema({
     video: {type: String, required: true},
     price: {type: Number},
     level: {type: String, default: 'Trung bình - Dễ'},
-    slug: { type: String, slug: "name", unique: true}
+    slug: { type: String, slug: "name", unique: true},
+
 }, {
     timestamps: true
 })
 
-
+Course.plugin(mongooseDelete, {  deletedAt: true, overrideMethods: true  })
 // Middleware để tạo slug trước khi lưu vào database
 Course.pre('save', async function(next) {
     if (!this.slug) {
@@ -35,5 +36,5 @@ Course.pre('save', async function(next) {
         this.slug = slug;
     }
     next();
-});
+})
 module.exports = mongoose.model('coures', Course)

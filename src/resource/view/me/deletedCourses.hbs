@@ -1,0 +1,109 @@
+<div class="mt-4">
+    <h3>Thùng rác</h3>
+    <a href="/me/stored/courses">Danh sách khóa học</a>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Tên khóa học</th>
+            <th scope="col">Trình độ</th>
+            <th scope="col">Thời gian xóa</th>
+            <th scope="col" colspan="2">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each listDeletedCourses}}
+            <tr>
+                <td scope="row">{{sum @index 1}}</td>
+                <td>{{this.name}}</td>
+                <td>{{this.level}}</td>
+                <td>{{this.deletedAt}}</td>
+                <td>
+                    <a href="" class="btn btn-link btn-restore" data-bs-toggle="modal" data-bs-target="#restoreModal" data-id="{{this._id}}">Phục hồi</a>
+                    <a href="" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="{{this._id}}">Xóa</a>
+                </td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="5">
+                    Thùng rác rỗng
+                    
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+           <!-- Modal for delete-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa khóa học</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Bạn chắc chắn muốn xóa?</p>
+            <h5>Nếu xóa bạn sẽ không thể khôi phục được nữa!!!</h5>
+        </div>
+        <div class="modal-footer">
+            <button id="btn-delete" class="btn btn-danger">Xóa</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        </div>
+        </div>
+    </div>
+</div>
+           <!-- Modal for restore-->
+<div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Phục hồi khóa học</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Bạn chắc chắn muốn phục hồi?</p>
+        </div>
+        <div class="modal-footer">
+            <button id="btn-restore" class="btn btn-primary">Phục hồi</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        </div>
+        </div>
+    </div>
+</div>
+{{!-- FORM HIDDEN SUBMIT--}}
+<form method="POST" id="destroyForm"></form>
+<form method="POST" id="restoreForm"></form>
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        var id
+        //[FOR DELETE]
+        const exampleModal = document.getElementById('exampleModal')
+        const btnDelete = document.getElementById('btn-delete')
+        const formDelete = document.getElementById('destroyForm')
+        //[FOR RESTORE]
+        const restore = document.getElementById('restoreModal')
+        const rsBtn = document.getElementById('btn-restore')
+        const restoreForm = document.getElementById('restoreForm')
+        //[funtion delete]
+        exampleModal.addEventListener('show.bs.modal', function(e){
+            const button = e.relatedTarget
+            id = button.getAttribute('data-id')
+            //console.log(id)
+        })
+        btnDelete.addEventListener('click', function(){
+            formDelete.action = '/me/trash/courses/' + id + '?_method=DELETE'
+            formDelete.submit()
+        })
+        //[funtion restore]
+        restore.addEventListener('show.bs.modal', function(e){
+            const button = e.relatedTarget
+            id = button.getAttribute('data-id')
+            console.log(id)
+        })
+        rsBtn.addEventListener('click', function(){
+            restoreForm.action = '/me/restored/' + id + '?_method=PATCH' 
+            restoreForm.submit()
+        })
+    }) 
+</script>

@@ -1,0 +1,49 @@
+<form class="mt-2" method="POST" action="/user/register"> 
+    <h3 class="mt-4">Đăng ký tài khoản</h3>
+    <div class="mb-3 mt-3">
+        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" required>
+        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputFirstname" class="form-label">Firstname</label>
+        <input type="text" class="form-control" id="firstname" name="firstname" required>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputLastname" class="form-label">Lastname</label>
+        <input type="text" class="form-control" id="lastname" name="lastname" required>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Telephone</label>
+        <input type="number" class="form-control" id="telephone" name="telephone">
+    </div>
+    <button type="submit" class="btn btn-primary disabled" id="submit-btn">Submit</button>
+</form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const submitBtn = document.getElementById('submit-btn');
+            function checkInput() {
+                if (emailInput.value.trim() !== '' & passwordInput.value.trim() !== '') {
+                    submitBtn.classList.remove('disabled')
+                } else {
+                    submitBtn.classList.add('disabled')
+                }
+            }
+            emailInput.addEventListener('input', checkInput)
+            passwordInput.addEventListener('input', checkInput)
+        })
+      // Lấy tham số từ URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+
+        // Nếu tham số 'error' tồn tại, hiển thị nó trong alert
+        if (error) {
+            alert('Error: ' + error);
+        }
+    </script>
